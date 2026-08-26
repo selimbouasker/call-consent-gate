@@ -10,7 +10,7 @@ import { HealthController } from './health.controller';
       type: 'postgres',
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'production',
     }),
   ],
   controllers: [HealthController],

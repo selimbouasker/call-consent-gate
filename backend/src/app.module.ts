@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthController } from './health.controller';
+import { StateRulesModule } from './state-rules/state-rules.module';
 
 @Module({
   imports: [
@@ -10,8 +11,9 @@ import { HealthController } from './health.controller';
       type: 'postgres',
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV !== 'production',
+      synchronize: process.env.NODE_ENV === 'development',
     }),
+    StateRulesModule,
   ],
   controllers: [HealthController],
 })

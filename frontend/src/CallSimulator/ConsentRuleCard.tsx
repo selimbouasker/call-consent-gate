@@ -1,4 +1,4 @@
-import type { StateRuleInfo } from '../types';
+import { ConsentRule, type StateRuleInfo } from '../types';
 import { consequenceCopy } from './consequence-copy';
 
 interface ConsentRuleCardProps {
@@ -13,7 +13,7 @@ export default function ConsentRuleCard({ info }: ConsentRuleCardProps) {
         <span
           className={
             'font-mono text-xs uppercase tracking-widest rounded px-2 py-1 border ' +
-            (info.consentRule === 'all-party'
+            (info.consentRule === ConsentRule.AllParty
               ? 'text-brass border-brass-dim bg-brass-dim/20'
               : 'text-slate border-slate-dim bg-slate-dim/40')
           }

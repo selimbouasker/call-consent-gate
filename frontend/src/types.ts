@@ -17,3 +17,23 @@ export interface StateRuleInfo {
   stateName: string;
   consentRule: ConsentRule;
 }
+
+export enum GateOutcome {
+  Recorded = 'recorded',
+  NotRecorded = 'not-recorded',
+  BugRecordedUnconfirmed = 'bug-recorded-unconfirmed',
+}
+
+export type ConsentClassification = 'yes' | 'no' | 'unclear';
+
+export interface ConsentClassificationResult {
+  classification: ConsentClassification;
+  shouldRetry: boolean;
+}
+
+export interface CreateCallInput {
+  candidateState: string;
+  consentRule: ConsentRule;
+  gateOutcome: GateOutcome;
+  transcriptText: string;
+}

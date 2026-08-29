@@ -4,6 +4,7 @@ import type { StateRuleInfo } from '../types';
 import ConsentLawIntro from './ConsentLawIntro';
 import StateSelect from './StateSelect';
 import ConsentRuleCard from './ConsentRuleCard';
+import ConsentFlow from './ConsentFlow';
 
 export default function CallSimulator() {
   const [states, setStates] = useState<StateRuleInfo[]>([]);
@@ -23,6 +24,9 @@ export default function CallSimulator() {
       <ConsentLawIntro />
       <StateSelect states={states} value={selectedState} onChange={setSelectedState} />
       {selected && <ConsentRuleCard info={selected} />}
+      {selected && (
+        <ConsentFlow key={selected.state} candidateState={selected.state} consentRule={selected.consentRule} />
+      )}
       {error && <p className="mt-6 text-red-400">{error}</p>}
     </div>
   );

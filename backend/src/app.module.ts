@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthController } from './health.controller';
 import { StateRulesModule } from './state-rules/state-rules.module';
+import { CallsModule } from './calls/calls.module';
 import { DATABASE_URL, IS_DEVELOPMENT } from './constants';
 
 @Module({
@@ -13,6 +14,7 @@ import { DATABASE_URL, IS_DEVELOPMENT } from './constants';
       synchronize: IS_DEVELOPMENT,
     }),
     StateRulesModule,
+    CallsModule,
   ],
   controllers: [HealthController],
 })

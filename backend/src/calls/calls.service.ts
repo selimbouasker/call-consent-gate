@@ -39,14 +39,29 @@ export class CallsService {
     return { classification: 'unclear', shouldRetry: !isRetry };
   }
 
-  createTranscript(input: CreateTranscriptInput): Promise<Transcript> {
+  async createTranscript(input: CreateTranscriptInput): Promise<Transcript> {
+    const { disclosureSaid, consentGiven } = await this.consentAi.auditCall(
+      input.transcriptText,
+      input.consentRule,
+    );
+
+    // A call that was never recorded carries no compliance risk, regardless of what was
+    // said — there's nothing to purge. Only a recorded call can be non-compliant.
+    const wasRecorded = input.gateOutcome !== GateOutcome.NotRecorded;
+    const compliant = !wasRecorded || (disclosureSaid && consentGiven);
+    const shouldBeDeleted = wasRecorded && !compliant;
+
     const transcript = this.transcripts.create({
       ...input,
-      disclosureSaid: null,
-      consentGiven: null,
-      compliant: null,
-      shouldBeDeleted: null,
+      disclosureSaid,
+      consentGiven,
+      compliant,
+      shouldBeDeleted,
     });
     return this.transcripts.save(transcript);
+  }
+
+  listTranscripts(): Promise<Transcript[]> {
+    return this.transcripts.find({ order: { createdAt: 'DESC' } });
   }
 }

@@ -1,4 +1,4 @@
-import type { ConsentClassificationResult, CreateCallInput, StateRuleInfo } from './types';
+import type { ConsentClassificationResult, CreateCallInput, StateRuleInfo, Transcript } from './types';
 
 export async function listStateRules(): Promise<StateRuleInfo[]> {
   const res = await fetch('/api/state-rule');
@@ -29,4 +29,12 @@ export async function createCall(input: CreateCallInput): Promise<void> {
   if (!res.ok) {
     throw new Error('Failed to save the call');
   }
+}
+
+export async function listCalls(): Promise<Transcript[]> {
+  const res = await fetch('/api/calls');
+  if (!res.ok) {
+    throw new Error('Failed to load calls');
+  }
+  return res.json();
 }

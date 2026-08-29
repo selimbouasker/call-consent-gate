@@ -37,3 +37,16 @@ export interface CreateCallInput {
   gateOutcome: GateOutcome;
   transcriptText: string;
 }
+
+export interface Transcript {
+  id: string;
+  candidateState: string;
+  consentRule: ConsentRule;
+  gateOutcome: GateOutcome;
+  disclosureSaid: boolean | null;
+  consentGiven: boolean | null;
+  compliant: boolean | null;
+  shouldBeDeleted: boolean | null;
+  transcriptText: string;
+  createdAt: string;
+}

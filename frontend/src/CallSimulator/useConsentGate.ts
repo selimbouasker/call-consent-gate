@@ -20,7 +20,7 @@ const DISCLOSURE =
 const REASK = 'Just to confirm clearly: yes or no?';
 const BUG_NOTE = '[bug: the consent question was skipped, but the call was recorded anyway]';
 
-export function useConsentGate(candidateState: string, consentRule: ConsentRule) {
+export function useConsentGate(candidateState: string, consentRule: ConsentRule, onEnded?: () => void) {
   const [status, setStatus] = useState<GateStatus>('awaiting_consent');
   const [transcript, setTranscript] = useState<TranscriptTurn[]>([{ speaker: 'agent', text: DISCLOSURE }]);
   const [isRetryPending, setIsRetryPending] = useState(false);
@@ -80,6 +80,7 @@ export function useConsentGate(candidateState: string, consentRule: ConsentRule)
         transcriptText: transcript.map((turn) => `${turn.speaker}: ${turn.text}`).join('\n'),
       });
       setStatus('ended');
+      onEnded?.();
     } catch {
       setError('Could not save the call. Try again.');
     } finally {

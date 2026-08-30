@@ -37,7 +37,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-rise {
+  .animate-rise,
+  .animate-pulse {
     animation: none;
   }
 }

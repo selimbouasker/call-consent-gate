@@ -1,10 +1,15 @@
 import { config } from 'dotenv';
+import env from 'env-var';
 
 config();
 
-export const NODE_ENV = process.env.NODE_ENV;
-export const IS_DEVELOPMENT = NODE_ENV === 'development';
-export const PORT = process.env.PORT ?? 3000;
-export const DATABASE_URL = process.env.DATABASE_URL;
-export const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173';
-export const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+export const appConstants = {
+  environment: env.get('NODE_ENV').default('local').asString(),
+  port: env.get('PORT').default(3000).asPortNumber(),
+  frontendOrigin: env.get('FRONTEND_ORIGIN').default('http://localhost:5173').asString(),
+  databaseUrl: env.get('DATABASE_URL').required().asString(),
+  anthropicApiKey: env.get('ANTHROPIC_API_KEY').required().asString(),
+  password: env.get('APP_PASSWORD').required().asString(),
+};
+
+export const isDevelopment = appConstants.environment === 'development';

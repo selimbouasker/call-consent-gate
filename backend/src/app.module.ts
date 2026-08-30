@@ -3,16 +3,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthController } from './health.controller';
 import { StateRulesModule } from './state-rules/state-rules.module';
 import { CallsModule } from './calls/calls.module';
-import { DATABASE_URL, IS_DEVELOPMENT } from './constants';
+import { AuthModule } from './auth/auth.module';
+import { appConstants, isDevelopment } from './constants';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: DATABASE_URL,
+      url: appConstants.databaseUrl,
       autoLoadEntities: true,
-      synchronize: IS_DEVELOPMENT,
+      synchronize: isDevelopment,
     }),
+    AuthModule,
     StateRulesModule,
     CallsModule,
   ],

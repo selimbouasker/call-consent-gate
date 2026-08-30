@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CallsService } from './calls.service';
 import { GateOutcome } from './calls.entity';
 import { ConsentRule } from '../state-rules/state-rules.service';
+import { AppPasswordGuard } from '../auth/app-password.guard';
 
 interface ClassifyConsentBody {
   reply: string;
@@ -15,6 +16,7 @@ interface CreateCallBody {
   transcriptText: string;
 }
 
+@UseGuards(AppPasswordGuard)
 @Controller()
 export class CallsController {
   constructor(private readonly calls: CallsService) {}

@@ -1,6 +1,11 @@
 import type { TranscriptTurn } from './useConsentGate';
 
-export default function TranscriptLog({ turns }: { turns: TranscriptTurn[] }) {
+interface TranscriptLogProps {
+  turns: TranscriptTurn[];
+  liveCandidateText?: string;
+}
+
+export default function TranscriptLog({ turns, liveCandidateText }: TranscriptLogProps) {
   return (
     <div className="space-y-2 max-h-64 overflow-y-auto">
       {turns.map((turn, i) => (
@@ -11,6 +16,12 @@ export default function TranscriptLog({ turns }: { turns: TranscriptTurn[] }) {
           {turn.text}
         </p>
       ))}
+      {liveCandidateText !== undefined && (
+        <p className="text-sm leading-relaxed">
+          <span className="font-mono text-xs uppercase tracking-widest text-ink-muted mr-2">Candidate</span>
+          <span className="text-ink-muted italic">{liveCandidateText || '…'}</span>
+        </p>
+      )}
     </div>
   );
 }

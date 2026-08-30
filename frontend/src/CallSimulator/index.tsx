@@ -9,12 +9,14 @@ import ConsentFlow from './ConsentFlow';
 export default function CallSimulator() {
   const [states, setStates] = useState<StateRuleInfo[]>([]);
   const [selectedState, setSelectedState] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     listStateRules()
       .then(setStates)
-      .catch(() => setError('Could not load the list of candidate states.'));
+      .catch(() => setError('Could not load the list of candidate states.'))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const selected = states.find((s) => s.state === selectedState) ?? null;
@@ -22,10 +24,15 @@ export default function CallSimulator() {
   return (
     <div>
       <ConsentLawIntro />
-      <StateSelect states={states} value={selectedState} onChange={setSelectedState} />
+      <StateSelect states={states} value={selectedState} onChange={setSelectedState} isLoading={isLoading} />
       {selected && <ConsentRuleCard info={selected} />}
       {selected && (
-        <ConsentFlow key={selected.state} candidateState={selected.state} consentRule={selected.consentRule} />
+        <ConsentFlow
+          key={selected.state}
+          candidateState={selected.state}
+          consentRule={selected.consentRule}
+          onEnded={() => setSelectedState('')}
+        />
       )}
       {error && <p className="mt-6 text-red-400">{error}</p>}
     </div>

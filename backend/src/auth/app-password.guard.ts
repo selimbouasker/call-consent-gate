@@ -14,8 +14,9 @@ export class AppPasswordGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const authorization: string | undefined = request.headers?.authorization;
 
-    if (!authorization) throw new UnauthorizedException('Missing Authorization header');
-    if (!isValidPassword(authorization)) throw new UnauthorizedException('Invalid password');
+    if (!authorization || !isValidPassword(authorization)) {
+      throw new UnauthorizedException('Unauthorized');
+    }
 
     return true;
   }

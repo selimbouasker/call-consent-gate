@@ -1,15 +1,15 @@
 const PASSWORD_KEY = 'consentGateAppPassword';
 
 export function getStoredPassword(): string | null {
-  return localStorage.getItem(PASSWORD_KEY);
+  return sessionStorage.getItem(PASSWORD_KEY);
 }
 
 export function storePassword(password: string): void {
-  localStorage.setItem(PASSWORD_KEY, password);
+  sessionStorage.setItem(PASSWORD_KEY, password);
 }
 
 export function clearStoredPassword(): void {
-  localStorage.removeItem(PASSWORD_KEY);
+  sessionStorage.removeItem(PASSWORD_KEY);
 }
 
 export async function verifyPassword(password: string): Promise<boolean> {

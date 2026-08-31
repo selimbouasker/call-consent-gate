@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CallsService } from './calls.service';
 import { GateOutcome } from './calls.entity';
 import { ConsentRule } from '../state-rules/state-rules.service';
@@ -27,5 +27,10 @@ export class CallsController {
   @Post('calls')
   create(@Body() body: CreateCallBody) {
     return this.calls.createTranscript(body);
+  }
+
+  @Get('calls')
+  list() {
+    return this.calls.listTranscripts();
   }
 }

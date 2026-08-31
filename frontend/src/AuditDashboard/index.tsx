@@ -8,6 +8,7 @@ type RuleFilter = 'all' | ConsentRule;
 
 export default function AuditDashboard() {
   const [calls, setCalls] = useState<Transcript[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [complianceFilter, setComplianceFilter] = useState<ComplianceFilter>('all');
   const [ruleFilter, setRuleFilter] = useState<RuleFilter>('all');
@@ -16,7 +17,8 @@ export default function AuditDashboard() {
   useEffect(() => {
     listCalls()
       .then(setCalls)
-      .catch(() => setError('Could not load the call log.'));
+      .catch(() => setError('Could not load the call log.'))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const states = Array.from(new Set(calls.map((call) => call.candidateState))).sort();
@@ -30,7 +32,7 @@ export default function AuditDashboard() {
   });
 
   return (
-    <div className="mt-16 border-t border-hairline pt-8">
+    <div>
       <p className="font-mono text-xs uppercase tracking-widest text-brass mb-3">Call log</p>
       <h1 className="font-display text-3xl mb-6">Every call, audited — not just the ones that failed loudly.</h1>
 
@@ -38,7 +40,8 @@ export default function AuditDashboard() {
         <select
           value={stateFilter}
           onChange={(e) => setStateFilter(e.target.value)}
-          className="bg-panel border border-hairline rounded-md px-3 py-2 text-sm"
+          disabled={isLoading}
+          className="bg-panel border border-hairline rounded-md px-3 py-2 text-sm disabled:opacity-40"
         >
           <option value="all">All states</option>
           {states.map((state) => (
@@ -51,7 +54,8 @@ export default function AuditDashboard() {
         <select
           value={ruleFilter}
           onChange={(e) => setRuleFilter(e.target.value as RuleFilter)}
-          className="bg-panel border border-hairline rounded-md px-3 py-2 text-sm"
+          disabled={isLoading}
+          className="bg-panel border border-hairline rounded-md px-3 py-2 text-sm disabled:opacity-40"
         >
           <option value="all">All rules</option>
           <option value={ConsentRule.OneParty}>One-party</option>
@@ -61,7 +65,8 @@ export default function AuditDashboard() {
         <select
           value={complianceFilter}
           onChange={(e) => setComplianceFilter(e.target.value as ComplianceFilter)}
-          className="bg-panel border border-hairline rounded-md px-3 py-2 text-sm"
+          disabled={isLoading}
+          className="bg-panel border border-hairline rounded-md px-3 py-2 text-sm disabled:opacity-40"
         >
           <option value="all">All statuses</option>
           <option value="compliant">Compliant</option>
@@ -69,7 +74,11 @@ export default function AuditDashboard() {
         </select>
       </div>
 
-      <CallsTable calls={filtered} />
+      {isLoading && <p className="text-ink-muted mt-6">Loading calls…</p>}
+      {!isLoading && calls.length === 0 && (
+        <p className="text-ink-muted mt-6">No calls yet — run one in the simulator.</p>
+      )}
+      {!isLoading && calls.length > 0 && <CallsTable calls={filtered} />}
       {error && <p className="mt-6 text-red-400">{error}</p>}
     </div>
   );

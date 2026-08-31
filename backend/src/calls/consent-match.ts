@@ -1,9 +1,9 @@
 export function matchConsentPhrase(reply: string): 'yes' | 'no' | null {
   const normalized = reply.trim().toLowerCase();
-  if (/\byes,?\s+i\s+consent\b/.test(normalized)) {
+  if (/^yes,?\s+i\s+consent\.?$/.test(normalized)) {
     return 'yes';
   }
-  if (/\bno,?\s+i\s+don'?t\s+consent\b/.test(normalized)) {
+  if (/^no,?\s+i\s+don'?t\s+consent\.?$/.test(normalized)) {
     return 'no';
   }
   return null;

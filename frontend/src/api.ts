@@ -1,7 +1,8 @@
 import type { ConsentClassificationResult, CreateCallInput, StateRuleInfo, Transcript } from './types';
+import { apiFetch } from './auth';
 
 export async function listStateRules(): Promise<StateRuleInfo[]> {
-  const res = await fetch('/api/state-rule');
+  const res = await apiFetch('/api/state-rule');
   if (!res.ok) {
     throw new Error('Failed to load state rules');
   }
@@ -9,7 +10,7 @@ export async function listStateRules(): Promise<StateRuleInfo[]> {
 }
 
 export async function classifyConsent(reply: string, isRetry: boolean): Promise<ConsentClassificationResult> {
-  const res = await fetch('/api/consent/classify', {
+  const res = await apiFetch('/api/consent/classify', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ reply, isRetry }),
@@ -21,7 +22,7 @@ export async function classifyConsent(reply: string, isRetry: boolean): Promise<
 }
 
 export async function createCall(input: CreateCallInput): Promise<void> {
-  const res = await fetch('/api/calls', {
+  const res = await apiFetch('/api/calls', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
@@ -32,7 +33,7 @@ export async function createCall(input: CreateCallInput): Promise<void> {
 }
 
 export async function listCalls(): Promise<Transcript[]> {
-  const res = await fetch('/api/calls');
+  const res = await apiFetch('/api/calls');
   if (!res.ok) {
     throw new Error('Failed to load calls');
   }

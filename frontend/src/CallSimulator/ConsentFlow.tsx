@@ -1,19 +1,32 @@
 import { useState } from 'react';
 import type { ConsentRule } from '../types';
 import { useConsentGate } from './useConsentGate';
+import { useSpeechInput } from './useSpeechInput';
 import RecordingIndicator from './RecordingIndicator';
 import TranscriptLog from './TranscriptLog';
+import VoiceInputButton from './VoiceInputButton';
 
 interface ConsentFlowProps {
   candidateState: string;
   consentRule: ConsentRule;
+  onEnded?: () => void;
 }
 
-export default function ConsentFlow({ candidateState, consentRule }: ConsentFlowProps) {
+export default function ConsentFlow({ candidateState, consentRule, onEnded }: ConsentFlowProps) {
   const { status, transcript, isBusy, isResolved, error, submitReply, simulateBug, endCall } =
-    useConsentGate(candidateState, consentRule);
+    useConsentGate(candidateState, consentRule, onEnded);
+  const {
+    isSupported: isVoiceSupported,
+    isListening,
+    micBlocked,
+    error: voiceError,
+    interimText,
+    start: startListening,
+    stop: stopListening,
+  } = useSpeechInput(submitReply);
   const [reply, setReply] = useState('');
   const isEnded = status === 'ended';
+  const canUseVoice = isVoiceSupported && !micBlocked;
 
   return (
     <div className="mt-10 border-t border-hairline pt-8">
@@ -22,33 +35,44 @@ export default function ConsentFlow({ candidateState, consentRule }: ConsentFlow
         <RecordingIndicator status={status} />
       </div>
 
-      <TranscriptLog turns={transcript} />
+      <TranscriptLog turns={transcript} liveCandidateText={isListening ? interimText : undefined} />
 
       {!isResolved && !isEnded && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const text = reply;
-            setReply('');
-            submitReply(text);
-          }}
-          className="mt-4 flex gap-2"
-        >
-          <input
-            value={reply}
-            onChange={(e) => setReply(e.target.value)}
-            placeholder="Candidate's reply…"
-            disabled={isBusy}
-            className="flex-1 bg-panel border border-hairline rounded-md px-4 py-2 text-ink"
-          />
-          <button
-            type="submit"
-            disabled={isBusy || !reply.trim()}
-            className="bg-slate-dim rounded-md px-4 py-2 disabled:opacity-40"
-          >
-            Send
-          </button>
-        </form>
+        <div className="mt-4">
+          {canUseVoice ? (
+            <VoiceInputButton
+              isListening={isListening}
+              onToggle={isListening ? stopListening : startListening}
+              disabled={isBusy}
+            />
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const text = reply;
+                setReply('');
+                submitReply(text);
+              }}
+              className="flex gap-2"
+            >
+              <input
+                value={reply}
+                onChange={(e) => setReply(e.target.value)}
+                placeholder="Candidate's reply…"
+                disabled={isBusy}
+                className="flex-1 bg-panel border border-hairline rounded-md px-4 py-2 text-ink"
+              />
+              <button
+                type="submit"
+                disabled={isBusy || !reply.trim()}
+                className="bg-slate-dim rounded-md px-4 py-2 disabled:opacity-40"
+              >
+                Send
+              </button>
+            </form>
+          )}
+          {voiceError && <p className="mt-2 text-xs text-red-400">{voiceError}</p>}
+        </div>
       )}
 
       {!isEnded && (

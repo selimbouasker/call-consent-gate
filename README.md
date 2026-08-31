@@ -30,13 +30,13 @@ Prerequisites: Postgres running locally with a `consent_gate` database, and a re
 # Backend
 cd backend
 cp .env.example .env   # fill in ANTHROPIC_API_KEY and APP_PASSWORD (required, no default)
-npm install
-npm run start:dev      # http://localhost:3000
+pnpm install
+pnpm run start:dev     # http://localhost:3000
 
 # Frontend, in a second terminal
 cd frontend
-npm install
-npm run dev             # http://localhost:5173
+pnpm install
+pnpm run dev            # http://localhost:5173
 ```
 
 - Open `http://localhost:5173` — you'll be asked for `APP_PASSWORD` first.
@@ -47,3 +47,4 @@ npm run dev             # http://localhost:5173
 - Backend: NestJS, PostgreSQL (TypeORM)
 - Frontend: React, Vite
 - AI: Claude Haiku (classification) + Sonnet (audit), Anthropic SDK, structured outputs
+- Package manager: pnpm

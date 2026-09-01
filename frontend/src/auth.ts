@@ -1,3 +1,5 @@
+import { BACKEND_URL } from './config';
+
 const PASSWORD_KEY = 'consentGateAppPassword';
 
 export function getStoredPassword(): string | null {
@@ -13,7 +15,7 @@ export function clearStoredPassword(): void {
 }
 
 export async function verifyPassword(password: string): Promise<boolean> {
-  const res = await fetch('/api/auth/verify', {
+  const res = await fetch(`${BACKEND_URL}/api/auth/verify`, {
     headers: { Authorization: password },
   });
   return res.ok;

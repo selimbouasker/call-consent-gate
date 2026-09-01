@@ -35,6 +35,7 @@ pnpm run start:dev     # http://localhost:3000
 
 # Frontend, in a second terminal
 cd frontend
+cp .env.example .env    # points VITE_BACKEND_URL at the backend above
 pnpm install
 pnpm run dev            # http://localhost:5173
 ```

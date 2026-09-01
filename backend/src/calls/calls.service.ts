@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import type { Transcript } from '@prisma/client';
 import { ConsentAiService } from './consent-ai.service';
 import { matchConsentPhrase } from './consent-match';
-import { Transcript, GateOutcome } from './calls.entity';
+import { PrismaService } from '../prisma/prisma.service';
 import { ConsentRule } from '../state-rules/state-rules.service';
+
+export enum GateOutcome {
+  Recorded = 'recorded',
+  NotRecorded = 'not-recorded',
+  BugRecordedUnconfirmed = 'bug-recorded-unconfirmed',
+}
 
 export interface ConsentClassificationResult {
   classification: 'yes' | 'no' | 'unclear';
@@ -22,7 +27,7 @@ export interface CreateTranscriptInput {
 export class CallsService {
   constructor(
     private readonly consentAi: ConsentAiService,
-    @InjectRepository(Transcript) private readonly transcripts: Repository<Transcript>,
+    private readonly prisma: PrismaService,
   ) {}
 
   async resolveConsentReply(reply: string, isRetry: boolean): Promise<ConsentClassificationResult> {
@@ -51,17 +56,18 @@ export class CallsService {
     const compliant = !wasRecorded || (disclosureSaid && consentGiven);
     const shouldBeDeleted = wasRecorded && !compliant;
 
-    const transcript = this.transcripts.create({
-      ...input,
-      disclosureSaid,
-      consentGiven,
-      compliant,
-      shouldBeDeleted,
+    return this.prisma.transcript.create({
+      data: {
+        ...input,
+        disclosureSaid,
+        consentGiven,
+        compliant,
+        shouldBeDeleted,
+      },
     });
-    return this.transcripts.save(transcript);
   }
 
   listTranscripts(): Promise<Transcript[]> {
-    return this.transcripts.find({ order: { createdAt: 'DESC' } });
+    return this.prisma.transcript.findMany({ orderBy: { createdAt: 'desc' } });
   }
 }

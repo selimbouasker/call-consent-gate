@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Transcript {
+  id              String   @id @default(uuid())
+  candidateState  String   @map("candidate_state")
+  consentRule     String   @map("consent_rule")
+  gateOutcome     String   @map("gate_outcome")
+  disclosureSaid  Boolean? @map("disclosure_said")
+  consentGiven    Boolean? @map("consent_given")
+  compliant       Boolean?
+  shouldBeDeleted Boolean? @map("should_be_deleted")
+  transcriptText  String   @map("transcript_text")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("transcripts")
+}

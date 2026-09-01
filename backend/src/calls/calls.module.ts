@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { CallsController } from './calls.controller';
 import { CallsService } from './calls.service';
 import { ConsentAiService } from './consent-ai.service';
-import { Transcript } from './calls.entity';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Transcript])],
   controllers: [CallsController],
-  providers: [CallsService, ConsentAiService],
+  providers: [CallsService, ConsentAiService, PrismaService],
 })
 export class CallsModule {}

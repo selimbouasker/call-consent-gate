@@ -24,13 +24,14 @@ No part of the compliance layer changes going from simulator to production.
 
 ## Running it locally
 
-Prerequisites: Postgres running locally with a `consent_gate` database, and a real `ANTHROPIC_API_KEY`.
+Prerequisites: Postgres running locally with a `consent_gate` database owned by a `consent_gate` role (Prisma needs an explicit user in the connection string — `createdb consent_gate && psql -c "CREATE ROLE consent_gate LOGIN CREATEDB" && psql -c "ALTER DATABASE consent_gate OWNER TO consent_gate"`), and a real `ANTHROPIC_API_KEY`.
 
 ```sh
 # Backend
 cd backend
 cp .env.example .env   # fill in ANTHROPIC_API_KEY and APP_PASSWORD (required, no default)
 pnpm install
+pnpm run prisma:migrate:dev   # creates the transcripts table
 pnpm run start:dev     # http://localhost:3000
 
 # Frontend, in a second terminal
@@ -45,7 +46,7 @@ pnpm run dev            # http://localhost:5173
 
 ## Stack
 
-- Backend: NestJS, PostgreSQL (TypeORM)
+- Backend: NestJS, PostgreSQL (Prisma)
 - Frontend: React, Vite
 - AI: Claude Haiku (classification) + Sonnet (audit), Anthropic SDK, structured outputs
 - Package manager: pnpm

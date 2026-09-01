@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { CallsService } from './calls.service';
-import { GateOutcome } from './calls.entity';
+import { CallsService, GateOutcome } from './calls.service';
 import { ConsentRule } from '../state-rules/state-rules.service';
 import { AppPasswordGuard } from '../auth/app-password.guard';
 
